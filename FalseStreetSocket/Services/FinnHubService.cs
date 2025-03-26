@@ -14,26 +14,33 @@ public class FinnhubService
 
     public async Task ConnectAsync(string APIKEY)
     {
-        var finnhubUrl = $"wss://ws.finnhub.io?token={APIKEY}";
-
-        await _finnhubSocket.ConnectAsync(new Uri(finnhubUrl), CancellationToken.None);
-        Console.WriteLine("Connected to Finnhub WebSocket");
-
-        _ = Task.Run(async () =>
+        try
         {
-            var buffer = new byte[4096];
+            var finnhubUrl = $"wss://ws.finnhub.io?token={APIKEY}";
 
-            while (_finnhubSocket.State == WebSocketState.Open)
+            await _finnhubSocket.ConnectAsync(new Uri(finnhubUrl), CancellationToken.None);
+            Console.WriteLine("Connected to Finnhub WebSocket");
+
+            _ = Task.Run(async () =>
             {
-                var result = await _finnhubSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                var buffer = new byte[4096];
 
-                Console.WriteLine($"Received: {message}");
+                while (_finnhubSocket.State == WebSocketState.Open)
+                {
+                    var result = await _finnhubSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                // Send the message to all WebSocket clients
-                await _webSocketManager.BroadcastMessageAsync(message);
-            }
-        });
+                    Console.WriteLine($"Received: {message}");
+
+                    // Send the message to all WebSocket clients
+                    await _webSocketManager.BroadcastMessageAsync(message);
+                }
+            });
+        }
+        catch (Exception ex) { 
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+
     }
 
     public async Task SubscribeToSymbol(string[] symbols)
