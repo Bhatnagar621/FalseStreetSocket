@@ -1,0 +1,6 @@
+@FalseStreetSocket_HostAddress = http://localhost:5058
+
+GET {{FalseStreetSocket_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

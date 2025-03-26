@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: websocket-server
+    env: docker
+    repo: https://github.com/YOUR_GITHUB_REPO
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: FINNHUB_API_KEY
+        sync: false
+    healthCheckPath: /
+    disk:
+      name: cache
+      mountPath: /cache
+      sizeGB: 1
