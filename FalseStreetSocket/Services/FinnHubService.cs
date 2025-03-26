@@ -12,9 +12,9 @@ public class FinnhubService
         _webSocketManager = webSocketManager;
     }
 
-    public async Task ConnectAsync()
+    public async Task ConnectAsync(string APIKEY)
     {
-        var finnhubUrl = "wss://ws.finnhub.io?token=YOUR_API_KEY";
+        var finnhubUrl = $"wss://ws.finnhub.io?token={APIKEY}";
 
         await _finnhubSocket.ConnectAsync(new Uri(finnhubUrl), CancellationToken.None);
         Console.WriteLine("Connected to Finnhub WebSocket");

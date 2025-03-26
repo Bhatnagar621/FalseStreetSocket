@@ -10,7 +10,10 @@ app.UseWebSockets();
 var webSocketManager = app.Services.GetRequiredService<WebSocketManager>();
 var finnhubService = app.Services.GetRequiredService<FinnhubService>();
 
-await finnhubService.ConnectAsync();
+string finnhubApiKey = builder.Configuration["Finnhub:ApiKey"] ?? throw new Exception("API Key missing");
+Console.WriteLine($"Using Finnhub API Key: {finnhubApiKey}");
+
+await finnhubService.ConnectAsync(finnhubApiKey);
 await finnhubService.SubscribeToSymbol(["AAPL"]);
 
 app.Map("/ws", async (HttpContext context) =>
